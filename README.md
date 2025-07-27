@@ -1,4 +1,19 @@
-# FOC-of-PMSM-MInor-Project
+# **Vectorial Control of PMSM in Simulink**
+
+## 📘 Overview
+
+This repository presents a complete MATLAB/Simulink-based simulation of a **Permanent Magnet Synchronous Motor (PMSM)** under **Vectorial Control**, commonly referred to as **Field-Oriented Control (FOC)**. The project comprises two coordinated models:
+
+1. `PMSM.slx` — a detailed **motor dynamics model** simulating electrical and mechanical behavior.
+2. `FOC_PMSM.slx` — a full implementation of the **vectorial control strategy**, including reference frame transformations, feedback loops, and voltage control logic.
+
+This simulation framework is ideal for students, researchers, and engineers working in motor control, electric drives, and embedded systems design.
+
+> **📚 Theoretical Foundation**
+> The simulation methodology and control principles are based on:
+> **"Electric Drives: Principles, Control, Modeling, and Simulation"**
+> by **Ned Mohan**, 1st Edition, Wiley, 2020.
+> ISBN: 978-1119584354
 
 ## Introduction
 
@@ -70,20 +85,4 @@ Here’s the updated and enhanced `README.md` with your requested changes:
 
 ---
 
-# **Vectorial Control of PMSM in Simulink**
-
-## 📘 Overview
-
-This repository presents a complete MATLAB/Simulink-based simulation of a **Permanent Magnet Synchronous Motor (PMSM)** under **Vectorial Control**, commonly referred to as **Field-Oriented Control (FOC)**. The project comprises two coordinated models:
-
-1. `PMSM.slx` — a detailed **motor dynamics model** simulating electrical and mechanical behavior.
-2. `FOC_PMSM.slx` — a full implementation of the **vectorial control strategy**, including reference frame transformations, feedback loops, and voltage control logic.
-
-This simulation framework is ideal for students, researchers, and engineers working in motor control, electric drives, and embedded systems design.
-
-> **📚 Theoretical Foundation**
-> The simulation methodology and control principles are based on:
-> **"Electric Drives: Principles, Control, Modeling, and Simulation"**
-> by **Ned Mohan**, 1st Edition, Wiley, 2020.
-> ISBN: 978-1119584354
 
