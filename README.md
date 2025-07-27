@@ -26,34 +26,64 @@ This project focuses on the closed loop field oriented control (FOC) of PMSM.
 
 ## Algorithm
 
-1. Measure the motor phase currents.
-2. Transform them into the two phase system (a, b) using Clarke transformation.
-3. Calculate the rotor position angle.
-4. Transform stator currents into the d, q-coordinate system using Park transformation.
-5. The stator current torque (i_sq) and flux (i_sd) producing components are controlled separately by the controllers.
-6. The output stator voltage space vector is transformed back from the d, q-coordinate system into the two phase system fixed with the stator by inverse Park transformation.
-7. Using the space vector modulation, the output three-phase voltage is generated.
-8. Calculate mechanical speed after every discrete PWM cycles.
+1.  **Reference Speed Input:** A desired "Reference Speed" (e.g., 1200 units, likely rad/s or RPM) is provided as the input to the speed control loop.
+
+2.  **Speed Error Calculation:** The "Reference Speed" is compared with the measured "Rotor speed wm (rad/s)" to calculate the speed error.
+
+3.  **Speed PI Control:** A Proportional-Integral (PI) controller processes the speed error to generate the reference q-axis current ($I_{q\_ref}$). The d-axis reference current ($I_{d\_ref}$) is typically set to 0 for maximum torque per ampere in a surface-mounted PMSM (as implied by the "0" input to the d-axis PI controller).
+
+4.  **Current Error Calculation:**
+    * The reference d-axis current ($I_{d\_ref}$) is compared with the measured d-axis current ($I_d$) from the Park & Clarke Transformation to calculate the d-axis current error.
+    * The reference q-axis current ($I_{q\_ref}$) is compared with the measured q-axis current ($I_q$) from the Park & Clarke Transformation to calculate the q-axis current error.
+
+5.  **Current PI Control:**
+    * Separate PI controllers process the d-axis and q-axis current errors to generate the reference d-axis voltage ($V_d$) and q-axis voltage ($V_q$) respectively.
+
+6.  **Inverse Park Transformation:** The reference d-axis voltage ($V_d$) and q-axis voltage ($V_q$), along with the measured "Rotor angle thetam (rad)" (theta), are transformed back into the two-phase stationary frame (alpha, beta) using the "Inverse Park Transform" to produce $V_{alpha}$ and $V_{beta}$.
+
+7.  **Inverse Clarke Transformation:** The two-phase stationary voltages ($V_{alpha}$, $V_{beta}$) are then transformed into the three-phase voltages ($V_a$, $V_b$, $V_c$) using the "Inverse Clarke Transform."
+
+8.  **Space Vector Pulse Width Modulation (SVPWM):** The three-phase voltages ($V_a$, $V_b$, $V_c$) are fed into the "SVPWM" block, which generates the appropriate switching pulses for the "Inverter."
+
+9.  **Inverter Operation:** The "Inverter" (power electronics) converts the DC link voltage into AC voltages applied to the "PMSM" based on the SVPWM pulses.
+
+10. **PMSM Operation:** The "PMSM" converts the electrical energy into mechanical energy, producing "Electromagnetic torque Te (N*m)" and driving the "Rotor speed wm (rad/s)" and "Rotor angle thetam (rad)." A "TLoad" input represents the mechanical load on the motor.
+
+11. **Current Measurement:** The actual three-phase stator currents ($I_a$, $I_b$, $I_c$) are measured from the PMSM output.
+
+12. **Park & Clarke Transformation (Forward Path):**
+    * The measured three-phase currents ($I_a$, $I_b$, $I_c$) are first transformed into the two-phase stationary frame (alpha, beta) using the Clarke Transformation (implicit within the "Park & Clarke Transformation" block).
+    * These two-phase currents (alpha, beta), along with the measured "Rotor angle thetam (rad)" (theta), are then transformed into the d, q-coordinate system using the Park Transformation (implicit within the "Park & Clarke Transformation" block) to yield the measured d-axis current ($I_d$) and q-axis current ($I_q$).
+
+13. **Feedback and Loop Closure:** The measured rotor speed ($W_m$), electromagnetic torque ($T_e$), and d/q-axis currents ($I_d$, $I_q$) are fed back to close the respective control loops (speed and current).
+
+14. **Output Monitoring:** The system allows monitoring of the "Stator current i_a, i_b, i_c (A)," "Rotor speed wm (rad/s)," "Electromagnetic torque Te (N*m)," and "Rotor angle thetam (rad)." The measured mechanical speed $W_m$ is also explicitly shown as an output.
 
 ## Block Diagram
 
 ![image](https://user-images.githubusercontent.com/67676040/124380871-e8b4a200-dcdc-11eb-829f-b376740b81cd.png)
 
-## Implementation in MATLAB/Simulink
+Here’s the updated and enhanced `README.md` with your requested changes:
 
-Permanent Magnet Synchronous Motor Model in Simulink:
+* The project is now titled **Vectorial Control of PMSM**.
+* It includes a properly cited **book reference** as the theoretical foundation for the control strategy.
 
-![image](https://user-images.githubusercontent.com/67676040/124380921-34674b80-dcdd-11eb-82bd-e039023ea8a7.png)
+---
 
-Field Oriented Control of PMSM in Simulink:
+# **Vectorial Control of PMSM in Simulink**
 
-![image](https://user-images.githubusercontent.com/67676040/124380953-814b2200-dcdd-11eb-84fe-228b05732f18.png)
+## 📘 Overview
 
-Theory about Space Vector Pulse Width Modulation: https://www.youtube.com/watch?v=nh9TD2M2r-o&t=234s 
+This repository presents a complete MATLAB/Simulink-based simulation of a **Permanent Magnet Synchronous Motor (PMSM)** under **Vectorial Control**, commonly referred to as **Field-Oriented Control (FOC)**. The project comprises two coordinated models:
 
-# Conclusion
+1. `PMSM.slx` — a detailed **motor dynamics model** simulating electrical and mechanical behavior.
+2. `FOC_PMSM.slx` — a full implementation of the **vectorial control strategy**, including reference frame transformations, feedback loops, and voltage control logic.
 
-The simulation files of both PMSM and PMSM with FOC are uploaded in the repository along with a couple of test results. The simulations are done in MATLAB 2021a.
+This simulation framework is ideal for students, researchers, and engineers working in motor control, electric drives, and embedded systems design.
 
-Hence, we can conclude that FOC is the standard regulator for Permanent Magnet Synchronous Motors. The chief constituents of this algorithm for example SVPWM and PI controllers are error less models with constant performance defined over a set of parameters.
+> **📚 Theoretical Foundation**
+> The simulation methodology and control principles are based on:
+> **"Electric Drives: Principles, Control, Modeling, and Simulation"**
+> by **Ned Mohan**, 1st Edition, Wiley, 2020.
+> ISBN: 978-1119584354
 
